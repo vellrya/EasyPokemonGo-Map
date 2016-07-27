@@ -12,11 +12,11 @@
 6. ???  
 7. Profit.  
 8. Спасибо мне: https://www.youtube.com/c/okplaygame
+9. Исправлены все ошибки. Работает с русским пользователем/русскими буквами в пути/небом/аллахом/etc.
 #### Я, как и разработчики самой карты, постоянно ()00)) работаем на улучшениями и исправлениями. Пожалуйста, периодически скачивайте архив заново. ####
 <p align="center">
 <img src="https://raw.githubusercontent.com/vellrya/EasyPokemonGo-Map/develop/static/cover.jpg">
 </p>
-Ах да, если у вас имя пользователя на русском, то вы в пролете. Создавайте нового.
 ###[Видеоинструкция по установке] (https://youtu.be/2svnEjK7GeI)###
 
 [![Build Status](https://travis-ci.org/AHAAAAAAA/PokemonGo-Map.svg?branch=master)](https://travis-ci.org/AHAAAAAAA/PokemonGo-Map) [![Coverage Status](https://coveralls.io/repos/github/AHAAAAAAA/PokemonGo-Map/badge.svg?branch=master)](https://coveralls.io/github/AHAAAAAAA/PokemonGo-Map?branch=master)
