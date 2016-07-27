@@ -1,0 +1,70 @@
+@echo off
+pushd %~dp0
+Echo Ž†€‹“‰‘’€, … ‡€Š›‚€‰’… ’Ž ŽŠŽ.
+Echo ’Ž Ž—…œ ‚€†Ž „‹Ÿ €‘. ˆ ’.„. ˆ ’.
+Echo ŽŽ Ž—…œ ›‘’Ž ‡€ŠŽ…’‘Ÿ ‘€ŒŽ
+Echo ˆ …™… - …‘‹ˆ ˆŒŸ Ž‹œ‡Ž‚€’…‹Ÿ € “‘‘ŠŽŒ
+Echo ’“’ “„…’ €•’“ƒ ˆ ˆ—…ƒŽ … ‡€€Ž’€…’
+:-------------------------------------
+REM  --> Check for permissions
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+
+REM --> If error flag set, we do not have admin.
+if '%errorlevel%' NEQ '0' (
+    goto UACPrompt
+) else ( goto gotAdmin )
+
+:UACPrompt
+    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+
+    "%temp%\getadmin.vbs"
+    exit /B
+
+:gotAdmin
+    if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
+    pushd "%CD%"
+    CD /D "%~dp0"
+:--------------------------------------
+cd ..\..
+set "CD1=%CD%"
+if exist "%CD1%\config\config.ini.afterfail" (
+if %computername%==MyBest-PC (
+Echo -!-
+Echo ¥à¥§ £àã§ª  ¯à®è«  ãá¯¥è­®.
+rename "%CD1%\config\config.ini.afterfail" config.ini.example
+Echo computername: %computername%, path: "%CD1%", username: %username%>>"%CD1%\logs\failinstlog.txt"
+) else (
+Echo “¢ë, ¯¥à¥§ £àã§ª  ­¥ ¯®¬®£« . „®¦¤¨â¥áì ®ª®­ç ­¨ï ¯à®æ¥áá ,
+Echo   ¯®â®¬ ®â¯à ¢ìâ¥ «®£¨ ¬®¥¬ã ­¥à ¤¨¢®¬ã à §à ¡®âç¨ªã
+Echo ########################################### >>"%CD1%\logs\failinstlog.txt"
+Echo After restart: >>"%CD1%\logs\failinstlog.txt"
+Echo computername: %computername%, path: "%CD1%", username: %username% >>"%CD1%\logs\failinstlog.txt"
+Echo ########################################### >>"%CD1%\logs\failinstlog.txt"
+)
+)
+timeout /t 13
+IF EXIST C:\Python27 (
+set PATH2=C:\Python27
+) ELSE (
+echo Python path not found, please specify or install.
+set /p PATH2= Specify Python path: 
+)
+setx PATH "%PATH%;%PATH2%;%PATH2%\Scripts;"
+echo %CD%
+if not exist pogom.db (
+wmic computersystem where name="%computername%" call rename name="MyBest-PC" >>"%CD1%\logs\failinstlog.txt"
+)
+popd
+echo %CD%
+"%PATH2%\python" get-pip.py 2>> "%CD1%\logs\failinstlog.txt"
+cd ..\..
+echo %CD%
+"%PATH2%\Scripts\pip" install -r requirements.txt 2>>"%CD%\logs\failinstlog.txt"
+"%PATH2%\Scripts\pip" install -r requirements.txt --upgrade 2>>"%CD%\logs\failinstlog.txt"
+cd config
+echo %CD%
+set "API=AIzaSyD7YBoBhiHzmoYpN0XRmkI-RdmHZOKxPqE"
+"%PATH2%\python" -c "print open('config.ini.example').read().replace('#gmaps-key:','gmaps-key:%API%')" > config5.ini
+rename config.ini.example config.ini.installed
+exit
