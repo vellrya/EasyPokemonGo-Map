@@ -12,8 +12,8 @@
 6. ???  
 7. Profit.  
 8. Спасибо мне: https://www.youtube.com/c/okplaygame
-<p align="center">
 #### Я, как и разработчики самой карты, постоянно ()00)) работаем на улучшениями и исправлениями. Пожалуйста, периодически скачивайте архив заново. ####
+<p align="center">
 <img src="https://raw.githubusercontent.com/vellrya/EasyPokemonGo-Map/develop/static/cover.jpg">
 </p>
 Ах да, если у вас имя пользователя на русском, то вы в пролете. Создавайте нового.
