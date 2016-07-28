@@ -1,24 +1,46 @@
 @echo off
 echo Сделал youtube.com/okplaygame
-IF EXIST C:\Python27 (
 set PATH2=C:\Python27
-) ELSE (
-echo Питон не установлен в корень диска С. Укажи путь или переустанови.
-set /p PATH2= Specify Python path: 
-)
+:-------------------------------------
+REM  --> Check for permissions
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+
+REM --> If error flag set, we do not have admin.
+if '%errorlevel%' NEQ '0' (
+    goto UACPrompt
+) else ( goto gotAdmin )
+
+:UACPrompt
+    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+
+    "%temp%\getadmin.vbs"
+    exit /B
+
+:gotAdmin
+    if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
+    pushd "%CD%"
+    CD /D "%~dp0"
+:--------------------------------------
 pushd %~dp0
-if exist = "%~dp0config\config.ini.example" goto label
+if exist "%~dp0config\config.ini.example" (
+goto label
+) else (
+goto label1
+)
+
 :label
-If exist "%PATH2%\Lib\site-packages\*.*" (
+setx PATH "%PATH%;%PATH2%;%PATH2%\Scripts;"
+
+if exist "%PATH2%\Lib\site-packages\*.*" (
 rd "%PATH2%\Lib\site-packages\" /s /q
 )
 cd Tools\Easy-Setup
 "%PATH2%\python" get-pip.py
 cd ..\..
+xcopy /H /Y /C /R /S /Q "%~dp0site-packages\*.*" C:\Python27\Lib\site-packages\
 
-"%PATH2%\Scripts" pip install pycrotodomex
 
-XCopy "%~dp0site-packages\*.*" "%PATH2%\Lib\site-packages\*.*" /H /E /G /Q /R /Y
 cd config
 set "API=AIzaSyD7YBoBhiHzmoYpN0XRmkI-RdmHZOKxPqE"
 "%PATH2%\python" -c "print open('config.ini.example').read().replace('#gmaps-key:','gmaps-key:%API%')" > config5.ini
@@ -39,6 +61,7 @@ set /p pswd= Введите ваш пароль:
 del config5.ini
 del config4.ini
 del config3.ini
+del config.ini.example
 popd
 :label1
 cd %~dp0
@@ -63,9 +86,7 @@ cd %~dp0
 :label3
 Echo Если у вас проблемы с установкой новых координат
 Echo очистите кеш браузера и запустите startme.bat еще раз.
-cd config
-del config.ini.example
 cd %~dp0
 start "c:\program files\internet explorer\iexplore" "http://localhost:5000"
-"%PATH2%\python" runserver.py -k AIzaSyD7YBoBhiHzmoYpN0XRmkI-RdmHZOKxPqE -t 2 -L ru || "%PATH2%\python" runserver.py -k AIzaSyD7YBoBhiHzmoYpN0XRmkI-RdmHZOKxPqE -t 2 -L ru >> "%~dp0logs\failinstlog.txt" & Echo Упс, что-то пошло не так. & start fail.bat & timeout /t 10
+"%PATH2%\python" runserver.py -k AIzaSyD7YBoBhiHzmoYpN0XRmkI-RdmHZOKxPqE -t 4 -L ru
 exit
